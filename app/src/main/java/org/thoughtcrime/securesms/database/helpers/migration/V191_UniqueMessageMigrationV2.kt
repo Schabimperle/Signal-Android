@@ -30,6 +30,9 @@ object V191_UniqueMessageMigrationV2 : SignalDatabaseMigration {
     // We're dropping it to put everyone back on the same playing field.
     db.execSQL("DROP INDEX IF EXISTS message_unique_sent_from_thread")
 
+    // Copied from fixed v175 migration. Executing this here seems just necessary for those few people who were migrating before the fix and ran into this issue.
+    db.execSQL("INSERT INTO message_fts(message_fts) VALUES ('rebuild')")
+
     val stopwatch = Stopwatch("migration")
 
     // Back in the day, we used to insert expiration updates with the same timestamp as the message that triggered them. To resolve the conflict, we can just
